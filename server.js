@@ -4,7 +4,7 @@ const app = express();
 const axios = require('axios');
 app.use(cors()); // Enable CORS for all routes
 
-const PORT = 3000;
+const PORT = 5000;
 // Just some constants
 const LEETCODE_API_ENDPOINT = 'https://leetcode.com/graphql'
 const DAILY_CODING_CHALLENGE_QUERY = `
@@ -49,6 +49,7 @@ app.get('/graphql-query', async (req, res) => {
 	try {
 		const response = await axios.post(graphqlEndpoint, { query: DAILY_CODING_CHALLENGE_QUERY });
 		const responseData = { ...response.data.data };
+		console.log(responseData);
 		const titleSlug = responseData.activeDailyCodingChallengeQuestion.question.titleSlug;
 
 		const variables = {
@@ -56,7 +57,15 @@ app.get('/graphql-query', async (req, res) => {
 		};
 
 		const response2 = await axios.post(graphqlEndpoint, { query: problemDetailQuery, variables });
-		res.json(response2.data);
+		const apiResponseObject = {
+			title: responseData.activeDailyCodingChallengeQuestion.question.title,
+			leetcodeLink: `https://leetcode.com/problems/${responseData.activeDailyCodingChallengeQuestion.link}`,
+			problemDescHTML: response2.data.data.question.content,
+			difficulty: responseData.activeDailyCodingChallengeQuestion.question.difficulty,
+			topicTags: responseData.activeDailyCodingChallengeQuestion.question.topicTags
+
+		}
+		res.json(apiResponseObject);
 	} catch (error) {
 		res.status(500).json({ error: 'Failed to query the GraphQL server during query 1' });
 	}

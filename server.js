@@ -59,7 +59,7 @@ app.get('/graphql-query', async (req, res) => {
 		const response2 = await axios.post(graphqlEndpoint, { query: problemDetailQuery, variables });
 		const apiResponseObject = {
 			title: responseData.activeDailyCodingChallengeQuestion.question.title,
-			leetcodeLink: `https://leetcode.com/problems/${responseData.activeDailyCodingChallengeQuestion.link}`,
+			leetcodeLink: `https://leetcode.com${responseData.activeDailyCodingChallengeQuestion.link}`,
 			problemDescHTML: response2.data.data.question.content,
 			difficulty: responseData.activeDailyCodingChallengeQuestion.question.difficulty,
 			topicTags: responseData.activeDailyCodingChallengeQuestion.question.topicTags
